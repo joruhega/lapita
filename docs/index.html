@@ -2,43 +2,63 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>LAPA EPIC GAME</title>
+  <title>EL LAPA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
-      background: #1a1a1a;
-      color: #f0f0f0;
-      font-family: sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      font-family: 'Press Start 2P', cursive;
+      background: linear-gradient(to right, #1f1c2c, #928dab);
+      color: #fff;
+      overflow-x: hidden;
     }
     #game {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #333;
-      padding: 20px;
+      max-width: 800px;
+      margin: 80px auto;
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
       border-radius: 10px;
+      box-shadow: 0 0 20px #ff4d00;
     }
-    button {
+    h1 {
+      text-align: center;
+      color: #ff4d00;
+      margin-bottom: 30px;
+    }
+    #text {
+      font-size: 16px;
+      min-height: 80px;
+      margin-bottom: 30px;
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 12px 20px;
       background: #ff4d00;
       border: none;
-      color: #fff;
-      padding: 10px 20px;
-      margin: 10px 5px;
       border-radius: 5px;
+      color: #fff;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #ffa500;
     }
     img {
       max-width: 100%;
       margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #fff;
     }
   </style>
 </head>
 <body>
 
 <div id="game">
-  <h1>El juego del lapa</h1>
-  <p id="text"></p>
+  <h1>LAPITA</h1>
+  <div id="text"></div>
   <div id="buttons"></div>
   <div id="result"></div>
 </div>
@@ -51,109 +71,114 @@
   const buttonsEl = document.getElementById("buttons");
   const resultEl = document.getElementById("result");
 
-  function showText(text) {
-    textEl.textContent = text;
+  function showTextAnimated(text, callback) {
+    let i = 0;
+    textEl.textContent = "";
+    const interval = setInterval(() => {
+      textEl.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        if (callback) callback();
+      }
+    }, 30);
   }
 
   function showButtons(options) {
     buttonsEl.innerHTML = "";
     options.forEach(opt => {
       const btn = document.createElement("button");
+      btn.className = "btn";
       btn.textContent = opt.text;
       btn.onclick = opt.handler;
       buttonsEl.appendChild(btn);
     });
   }
 
+  function showImage(url) {
+    resultEl.innerHTML = `<img src="${url}" alt="Lapa">`;
+  }
+
   function startGame() {
-    showText("Te encuentras en el Pub de Andrés. El Lapa te pide un cigarro gratis.");
-    showButtons([
-      {
-        text: "Invitar cigarro",
-        handler: () => {
-          score += 10;
-          caladas += 1;
-          showImage("https://via.placeholder.com/300x200.png?text=El+Lapa+feliz");
-          nextScene();
+    score = 0;
+    caladas = 0;
+    resultEl.innerHTML = "";
+    showTextAnimated("Estás en el Pub de Andrés. El Lapa te pide una rondita..", () => {
+      showButtons([
+        {
+          text: "Invitar cigarrito pal lapa",
+          handler: () => {
+            score += 10;
+            caladas += 1;
+            showImage("https://via.placeholder.com/400x250/ff4d00/ffffff?text=Lapa+Feliz");
+            nextScene();
+          }
+        },
+        {
+          text: "Cobrarle el cigarrito",
+          handler: () => {
+            score += 20;
+            showImage("https://via.placeholder.com/400x250/333333/ffffff?text=Lapa+Sorprendido");
+            nextScene();
+          }
+        },
+        {
+          text: "Huir del lapa",
+          handler: () => {
+            score -= 5;
+            showImage("https://via.placeholder.com/400x250/000000/ff0000?text=Lapa+Enfado");
+            nextScene();
+          }
         }
-      },
-      {
-        text: "Cobrar deuda",
-        handler: () => {
-          score += 20;
-          nextScene();
-        }
-      },
-      {
-        text: "Huir",
-        handler: () => {
-          score -= 5;
-          nextScene();
-        }
-      }
-    ]);
+      ]);
+    });
   }
 
   function nextScene() {
-    showText("¿Qué quieres hacer ahora?");
-    showButtons([
-      {
-        text: "Dar otra calada al Lapa",
-        handler: () => {
-          score += 5;
-          caladas += 1;
-          checkEnding();
+    showTextAnimated("¿Qué haces ahora? El Lapa sigue acechando...", () => {
+      showButtons([
+        {
+          text: "Dar otra cigarrito al Lapa",
+          handler: () => {
+            score += 5;
+            caladas += 1;
+            checkEnding();
+          }
+        },
+        {
+          text: "Escuchar sus fantasmadas",
+          handler: () => {
+            score -= 10;
+            checkEnding();
+          }
+        },
+        {
+          text: "Ir a Amars Pub",
+          handler: () => {
+            score += 3;
+            checkEnding();
+          }
         }
-      },
-      {
-        text: "escuchar fantasmadas del lapita ",
-        handler: () => {
-          score -= 10;
-          checkEnding();
-        }
-      },
-      {
-        text: "Ir al Pub de Andrés",
-        handler: () => {
-          score += 3;
-          checkEnding();
-        }
-      }
-    ]);
+      ]);
+    });
   }
 
   function checkEnding() {
     if (score >= 20) {
-      showText("🎉 ¡POSTRE! El Lapa te dice que paga el postre.");
-      showImage("https://via.placeholder.com/300x200.png?text=Lapa+Win");
-      showFinalScore();
+      showTextAnimated("🎉 ¡POSTRE! El Lapa te invita al postre con Guille, su amo supremo.", showFinalScore);
+      showImage("https://via.placeholder.com/400x250/00cc99/ffffff?text=Postre+Lapariano");
     } else if (score <= -10) {
-      showText("💀 Final malo.El Lapa se arruina en la ruleta.");
-      showImage("https://via.placeholder.com/300x200.png?text=Lapa+Fail");
-      showFinalScore();
+      showTextAnimated("💀 Final oscuro. El Lapa se arruina en la ruleta y desaparece.", showFinalScore);
+      showImage("https://via.placeholder.com/400x250/990000/ffffff?text=Lapa+Arruinado");
     } else {
       nextScene();
     }
   }
 
-  function showImage(url) {
-    resultEl.innerHTML = `<img src="${url}" alt="Lapa">`;
-  }
-
   function showFinalScore() {
     const msg = `Caladas dadas: ${caladas} | Puntuación: ${score}`;
-    const storageKey = "lapa-highscore";
-
-    let highscore = localStorage.getItem(storageKey);
-    if (!highscore || score > parseInt(highscore)) {
-      localStorage.setItem(storageKey, score);
-      resultEl.innerHTML += `<p>¡Nuevo récord lapariano!</p>`;
-    } else {
-      resultEl.innerHTML += `<p>Tu récord sigue siendo ${highscore}</p>`;
-    }
-
-    resultEl.innerHTML += `<p>${msg}</p>`;
-    showButtons([{ text: "Jugar de nuevo", handler: startGame }]);
+    resultEl.innerHTML += `<p style="margin-top:20px;">${msg}</p>`;
+    showButtons([{ text: "Jugar otra vez", handler: startGame }]);
   }
 
   startGame();
@@ -161,3 +186,4 @@
 
 </body>
 </html>
+
