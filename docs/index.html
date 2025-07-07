@@ -163,6 +163,24 @@
     });
   }
 
+<body>
+<audio id="bg-music" autoplay loop>
+  <source src="https://archive.org/download/audio-2025-05-05-07-53-27/audio-2025-05-05-07-53-27.mp3" type="audio/mpeg">
+  Tu navegador no soporta audio.
+</audio>
+
+<div id="game">
+  <!-- Tu juego aquí -->
+</div>
+
+<script>
+window.onload = () => {
+  const audio = document.getElementById("bg-music");
+  audio.volume = 0.2;
+};
+</script>
+</body>
+  
   function checkEnding() {
     if (score >= 20) {
       showTextAnimated("🎉 ¡POSTRE! El Lapa te invita al postre con Guille, su amo supremo.", showFinalScore);
