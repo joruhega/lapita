@@ -37,7 +37,7 @@
 <body>
 
 <div id="game">
-  <h1>LAPA EPIC GAME</h1>
+  <h1>El juego del lapa</h1>
   <p id="text"></p>
   <div id="buttons"></div>
   <div id="result"></div>
@@ -106,7 +106,7 @@
         }
       },
       {
-        text: "Mandar al Lapa con Albita",
+        text: "escuchar fantasmadas del lapita ",
         handler: () => {
           score -= 10;
           checkEnding();
@@ -124,11 +124,11 @@
 
   function checkEnding() {
     if (score >= 20) {
-      showText("🎉 ¡Final bueno! El Lapa te paga el postre y te invita a kebab.");
+      showText("🎉 ¡POSTRE! El Lapa te dice que paga el postre.");
       showImage("https://via.placeholder.com/300x200.png?text=Lapa+Win");
       showFinalScore();
     } else if (score <= -10) {
-      showText("💀 Final malo. Albita te da la espalda. El Lapa se arruina.");
+      showText("💀 Final malo.El Lapa se arruina en la ruleta.");
       showImage("https://via.placeholder.com/300x200.png?text=Lapa+Fail");
       showFinalScore();
     } else {
