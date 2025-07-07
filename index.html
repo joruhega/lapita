@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>LAPA EPIC GAME</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      color: #f0f0f0;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    #game {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    button {
+      background: #ff4d00;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game">
+  <h1>LAPA EPIC GAME</h1>
+  <p id="text"></p>
+  <div id="buttons"></div>
+  <div id="result"></div>
+</div>
+
+<script>
+  let score = 0;
+  let caladas = 0;
+
+  const textEl = document.getElementById("text");
+  const buttonsEl = document.getElementById("buttons");
+  const resultEl = document.getElementById("result");
+
+  function showText(text) {
+    textEl.textContent = text;
+  }
+
+  function showButtons(options) {
+    buttonsEl.innerHTML = "";
+    options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.textContent = opt.text;
+      btn.onclick = opt.handler;
+      buttonsEl.appendChild(btn);
+    });
+  }
+
+  function startGame() {
+    showText("Te encuentras en el Pub de Andrés. El Lapa te pide un cigarro gratis.");
+    showButtons([
+      {
+        text: "Invitar cigarro",
+        handler: () => {
+          score += 10;
+          caladas += 1;
+          showImage("https://via.placeholder.com/300x200.png?text=El+Lapa+feliz");
+          nextScene();
+        }
+      },
+      {
+        text: "Cobrar deuda",
+        handler: () => {
+          score += 20;
+          nextScene();
+        }
+      },
+      {
+        text: "Huir",
+        handler: () => {
+          score -= 5;
+          nextScene();
+        }
+      }
+    ]);
+  }
+
+  function nextScene() {
+    showText("¿Qué quieres hacer ahora?");
+    showButtons([
+      {
+        text: "Dar otra calada al Lapa",
+        handler: () => {
+          score += 5;
+          caladas += 1;
+          checkEnding();
+        }
+      },
+      {
+        text: "Mandar al Lapa con Albita",
+        handler: () => {
+          score -= 10;
+          checkEnding();
+        }
+      },
+      {
+        text: "Ir al Pub de Andrés",
+        handler: () => {
+          score += 3;
+          checkEnding();
+        }
+      }
+    ]);
+  }
+
+  function checkEnding() {
+    if (score >= 20) {
+      showText("🎉 ¡Final bueno! El Lapa te paga el postre y te invita a kebab.");
+      showImage("https://via.placeholder.com/300x200.png?text=Lapa+Win");
+      showFinalScore();
+    } else if (score <= -10) {
+      showText("💀 Final malo. Albita te da la espalda. El Lapa se arruina.");
+      showImage("https://via.placeholder.com/300x200.png?text=Lapa+Fail");
+      showFinalScore();
+    } else {
+      nextScene();
+    }
+  }
+
+  function showImage(url) {
+    resultEl.innerHTML = `<img src="${url}" alt="Lapa">`;
+  }
+
+  function showFinalScore() {
+    const msg = `Caladas dadas: ${caladas} | Puntuación: ${score}`;
+    const storageKey = "lapa-highscore";
+
+    let highscore = localStorage.getItem(storageKey);
+    if (!highscore || score > parseInt(highscore)) {
+      localStorage.setItem(storageKey, score);
+      resultEl.innerHTML += `<p>¡Nuevo récord lapariano!</p>`;
+    } else {
+      resultEl.innerHTML += `<p>Tu récord sigue siendo ${highscore}</p>`;
+    }
+
+    resultEl.innerHTML += `<p>${msg}</p>`;
+    showButtons([{ text: "Jugar de nuevo", handler: startGame }]);
+  }
+
+  startGame();
+</script>
+
+</body>
+</html>
